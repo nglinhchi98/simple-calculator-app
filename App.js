@@ -1,21 +1,24 @@
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View, TextInput, TouchableOpacity } from 'react-native';
+import { StyleSheet, Text, View, TextInput, TouchableOpacity, FlatList } from 'react-native';
 import { useState } from 'react';
 
 export default function App() {
   const [number1, setNumber1] = useState('0');
   const [number2, setNumber2] = useState('0');
   const [result, setResult] = useState('');
+  const [history, setHistory] = useState([]);
 
   const plus = () => {
     const sum = parseFloat(number1) + parseFloat(number2);
-    setResult(sum.toString())
-  }
+    setResult(sum.toString());
+    setHistory([...history, `${number1} + ${number2} = ${sum}`]);
+  };
   const minus = () => {
     const difference = parseFloat(number1) - parseFloat(number2);
-    setResult(difference.toString())
+    setResult(difference.toString());
+    setHistory([...history, `${number1} - ${number2} = ${difference}`]);
   }
-
+   
   return (
     <View style={styles.container}>
       <Text>Calculator: Result is {result}</Text>
@@ -36,9 +39,14 @@ export default function App() {
           <Text style={styles.buttonText}>- </Text>
         </TouchableOpacity>
       </View>
-        
-      
+      <FlatList 
+        data={history}
+        renderItem={({item}) => <Text>{item}</Text>}
+        keyExtractor= {(item, index) => index.toString()}
+        style={styles.historyList} />
+
       <StatusBar style="auto" />
+      
     </View>
   );
 }
@@ -49,6 +57,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     alignItems: 'center',
     justifyContent: 'center',
+    marginTop: 200
   },
   buttonContainer: {
     flexDirection: 'row',
@@ -64,5 +73,10 @@ const styles = StyleSheet.create({
   },
   buttonText: {
     color: 'white', // Text color of the button
-    textAlign: 'center',}
+    textAlign: 'center',
+  },
+  historyList: {
+    marginTop: 20,
+    alignSelf: 'center',
+  },
 });
